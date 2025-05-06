@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TiMosa | Support Ticket System</title>
+  <style>
+    :root {
+      --gold: #f5c518;
+      --black: #1b1b1b;
+      --dark-gray: #2c2c2c;
+      --light-gray: #cccccc;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--black);
+      color: var(--light-gray);
+      line-height: 1.6;
+    }
+
+    header {
+      background-color: var(--dark-gray);
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      color: var(--gold);
+      font-size: 2.2rem;
+      letter-spacing: 1px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: bold;
+      padding: 10px 18px;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    nav a:hover {
+      background-color: var(--gold);
+      color: var(--black);
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .intro {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .intro h2 {
+      font-size: 2rem;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+
+    .intro p {
+      font-size: 1rem;
+      color: #ddd;
+    }
+
+    .btn {
+      background-color: var(--gold);
+      color: var(--black);
+      padding: 12px 25px;
+      text-decoration: none;
+      border-radius: 8px;
+      display: inline-block;
+      margin-top: 20px;
+      transition: background 0.3s;
+      font-weight: bold;
+    }
+
+    .btn:hover {
+      background-color: #e0b700;
+    }
+
+    .sections {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      margin-top: 50px;
+    }
+
+    .card {
+      background: var(--dark-gray);
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(245, 197, 24, 0.1);
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+      color: var(--gold);
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      color: #ccc;
+    }
+
+    .extra-section {
+      margin-top: 80px;
+      background-color: #222;
+      border-radius: 12px;
+      padding: 40px 20px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 30px;
+    }
+
+    .extra-section img {
+      max-width: 400px;
+      border-radius: 10px;
+      flex: 1;
+    }
+
+    .extra-text {
+      flex: 2;
+      color: #eee;
+    }
+
+    .extra-text h4 {
+      font-size: 1.8rem;
+      color: var(--gold);
+      margin-bottom: 15px;
+    }
+
+    .extra-text p {
+      font-size: 1rem;
+    }
+
+    footer {
+      background-color: var(--dark-gray);
+      color: #aaa;
+      text-align: center;
+      padding: 20px 0;
+      margin-top: 60px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>TiMosa</h1>
+    <nav>
+      {% if user.is_authenticated %}
+        <a href="/accounts/profile/">My Profile</a>
+
+        <a <form action="{% url 'logout' %}" method="post">
+          {% csrf_token %}
+          <button type="submit">Logout</button>
+        </form></a>
+        
+      {% else %}
+        <a href="/registration/signup/">Sign Up</a>
+        <a href="/registration/login/">Log In</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="intro">
+      <h2>Need Help? We're Here for You.</h2>
+      <p>Submit a ticket, track your issue, or explore solutions to common problems.</p>
+      <a href="/tickets/create/" class="btn">Create New Ticket</a>
+    </div>
+
+    <div class="sections">
+      <div class="card">
+        <h3>Submit a Ticket</h3>
+        <p>Let us know what issue you're facing. Our team will assist you as soon as possible.</p>
+      </div>
+
+      <div class="card">
+        <h3>Track Existing Tickets</h3>
+        <p>View your submitted tickets and check their progress in real-time.</p>
+      </div>
+
+      <div class="card">
+        <h3>Browse FAQs</h3>
+        <p>Find answers to frequently asked questions and common troubleshooting tips.</p>
+      </div>
+
+      <div class="card">
+        <h3>Live Chat Support</h3>
+        <p>Need quick help? Start a live chat with one of our support agents.</p>
+      </div>
+    </div>
+
+    <div class="extra-section">
+      <img src="https://images.unsplash.com/photo-1607746882042-944635dfe10e" alt="Customer Support" />
+      <div class="extra-text">
+        <h4>We’re More Than Just a Help Desk</h4>
+        <p>
+          At TiMosa, our mission is to deliver fast, reliable, and human-centric support. Whether you're solving complex issues or need simple guidance, our team is ready to serve you with excellence and care. Scroll around and discover everything we offer.
+        </p>
+      </div>
+    </div>
+  </div>
+
+ 
+
+</body>
+</html>

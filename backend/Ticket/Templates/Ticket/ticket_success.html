@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Created Successfully</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #1a1a1a; /* Black background */
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #f4f4f9; /* Light text */
+        }
+
+        .container {
+            max-width: 900px;
+            margin-top: 100px;
+            padding: 40px;
+            background-color: #2d2d2d; /* Dark grey background */
+            border-radius: 15px;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+            animation: fadeIn 1s ease-out;
+            transition: box-shadow 0.3s ease, transform 0.3s ease; /* Smooth transition for hover effect */
+        }
+
+        /* Fade-in animation */
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .container:hover {
+            box-shadow: 0 8px 35px rgba(0, 0, 0, 0.3); /* Increase shadow on hover */
+            transform: translateY(-5px); /* Lift effect on hover */
+        }
+
+        h2 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            text-align: center;
+            color: #f1c40f; /* Gold */
+            margin-bottom: 20px;
+        }
+
+        p {
+            text-align: center;
+            font-size: 1.3rem;
+            color: #b0b0b0; /* Light grey */
+            margin-bottom: 30px;
+        }
+
+        .btn-back {
+            background-color: #f1c40f; /* Gold */
+            color: #1a1a1a; /* Black text */
+            border-radius: 30px;
+            padding: 16px 40px;
+            font-size: 1.3rem;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: 1px;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; /* Button transition */
+            border: none;
+            display: block;
+            margin: 40px auto 0;
+        }
+
+        .btn-back:hover {
+            background-color: #e0b90f; /* Slightly darker gold */
+            transform: translateY(-3px); /* Slight hover lift effect */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Shadow for button on hover */
+        }
+
+        .btn-back:active {
+            transform: translateY(1px); /* Button press effect */
+            box-shadow: none; /* Remove shadow on click */
+        }
+
+        .container p {
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Ticket Created Successfully!</h2>
+    <p>Your ticket has been created successfully. Thank you for reaching out to us. A support team member will be in touch shortly.</p>
+
+    <a href="{% url 'ticket_list' %}" class="btn-back">Back to Ticket List</a>
+</div>
+
+</body>
+</html>

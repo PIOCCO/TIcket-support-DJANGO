@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Ticket</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1a1a1a; /* Dark background */
+            font-family: 'Arial', sans-serif;
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin-top: 50px;
+            padding: 40px;
+            background-color: #2d2d2d; /* Dark container background */
+            border-radius: 12px;
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.15); /* Soft shadow */
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #f1c40f; /* Golden header */
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #f4f4f9;
+        }
+
+        .form-control {
+            font-size: 14px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #f1c40f; /* Golden focus */
+            box-shadow: 0 0 5px rgba(241, 196, 15, 0.5); /* Golden glow */
+        }
+
+        .btn-submit {
+            background-color: #f1c40f; /* Golden button */
+            color: #1a1a1a; /* Black text */
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s ease;
+            border: none;
+            font-weight: 600;
+        }
+
+        .btn-submit:hover {
+            background-color: #e0b90f; /* Slightly darker gold on hover */
+        }
+
+        .btn-secondary {
+            background-color: #333;
+            color: #f1c40f;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 20px;
+            border: 1px solid #444;
+            margin-top: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: #444;
+            border-color: #555;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .alert ul li {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Edit Ticket</h2>
+
+    <!-- Displaying form errors if any -->
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <ul>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <!-- Ticket Edit Form -->
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_title">Ticket Title</label>
+            {{ form.title }}
+        </div>
+        <div class="form-group">
+            <label for="id_description">Description</label>
+            {{ form.description }}
+        </div>
+        <div class="form-group">
+            <label for="id_status">Status</label>
+            {{ form.status }}
+        </div>
+        <div class="form-group">
+            <label for="id_priority">Priority</label>
+            {{ form.priority }}
+        </div>
+        <div class="form-group">
+            <label for="id_category">Category</label>
+            {{ form.category }}
+        </div>
+        <div class="form-group">
+            <label for="id_assigned_to">Assign To</label>
+            {{ form.assigned_to }}
+        </div>
+        <button type="submit" class="btn-submit">Save Changes</button>
+    </form>
+
+    <a href="{% url 'ticket_list' %}" class="btn-secondary mt-3">Back to Ticket List</a>
+</div>
+
+</body>
+</html>
