@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Sign Up</title>
+    <title>Edit Profile</title>
     <style>
         body {
             background-color: #0d0d0d;
@@ -15,13 +15,13 @@
             margin: 0;
         }
 
-        .signup-container {
+        .edit-container {
             background-color: #1a1a1a;
             padding: 40px;
             border-radius: 12px;
-            box-shadow: 0 0 15px rgba(240, 192, 64, 0.2);
+            box-shadow: 0 0 15px rgba(240, 192, 64, 0.3);
             width: 100%;
-            max-width: 400px;
+            max-width: 500px;
         }
 
         h2 {
@@ -69,74 +69,37 @@
             background-color: #ffcc00;
         }
 
-        .login-link {
-            text-align: center;
+        .back-link {
             margin-top: 20px;
-            color: #f0c040;
+            text-align: center;
         }
 
-        .login-link a {
+        .back-link a {
             color: #ffcc00;
             text-decoration: none;
         }
 
-        .login-link a:hover {
+        .back-link a:hover {
             text-decoration: underline;
         }
 
-        /* Display error messages */
         .errorlist {
-            color: red;
-            margin-top: 10px;
-        }
-
-        .errorlist li {
-            margin: 5px 0;
+            color: #ff4444;
+            font-size: 0.9em;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="signup-container">
-        <h2>Create an Account</h2>
-
+    <div class="edit-container">
+        <h2>Edit Your Profile</h2>
         <form method="post">
             {% csrf_token %}
-
-            <label for="{{ form.username.id_for_label }}">Username</label>
-            {{ form.username }}
-            {% if form.username.errors %}
-                <ul class="errorlist">
-                    {% for error in form.username.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-
-            <label for="{{ form.password1.id_for_label }}">Password</label>
-            {{ form.password1 }}
-            {% if form.password1.errors %}
-                <ul class="errorlist">
-                    {% for error in form.password1.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-
-            <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
-            {{ form.password2 }}
-            {% if form.password2.errors %}
-                <ul class="errorlist">
-                    {% for error in form.password2.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-
-            <button type="submit">Sign Up</button>
+            {{ form.as_p }}
+            <button type="submit">Save Changes</button>
         </form>
-
-        <div class="login-link">
-            Already have an account? <a href="{% url 'login' %}">Log in here</a>
+        <div class="back-link">
+            <a href="{% url 'default_profile' %}">Back to Profile</a>
         </div>
     </div>
 </body>

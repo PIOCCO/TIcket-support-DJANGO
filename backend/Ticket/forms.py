@@ -8,9 +8,7 @@ class TicketForm(forms.ModelForm):
         model = Ticket
         fields = ['title', 'description', 'status', 'priority', 'category', 'assigned_to']
 
-
-
 class CustomUserCreationForm(UserCreationForm):
-    class Meta(UserCreationForm.Meta):
+    class Meta:
         model = User
-        fields = ('username', 'email')  # Add fields you want
+        fields = ('username', 'password1', 'password2')

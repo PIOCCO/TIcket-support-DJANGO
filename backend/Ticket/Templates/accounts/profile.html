@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile</title>
+    <style>
+        body {
+            background-color: #0d0d0d;
+            color: #f0c040;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 60px auto;
+            background-color: #1a1a1a;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(240, 192, 64, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #f0c040;
+            margin-bottom: 30px;
+        }
+
+        .info {
+            margin-bottom: 30px;
+        }
+
+        .info p {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        .info span {
+            font-weight: bold;
+            color: #ffcc00;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .btn {
+            background-color: #f0c040;
+            color: #0d0d0d;
+            padding: 12px 20px;
+            text-decoration: none;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-block;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #ffcc00;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>My Profile</h1>
+        
+        <div class="info">
+            <p><span>Username:</span> {{ user.username }}</p>
+            <p><span>Email:</span> {{ user.email }}</p>
+            <p><span>Date Joined:</span> {{ user.date_joined }}</p>
+            {% if user.is_superuser %}
+            <p><span>Role:</span> Admin</p>
+        {% elif user.is_staff %}
+            <p><span>Role:</span> Staff</p>
+        {% else %}
+            <p><span>Role:</span> User</p>
+        {% endif %}
+        </div>
+
+        <div class="buttons">
+            <a href="{% url 'edit_profile' %}" class="btn">Edit Profile</a>
+            <a href="{% url 'logout' %}" class="btn">Log Out</a>
+        </div>
+    </div>
+
+</body>
+</html>

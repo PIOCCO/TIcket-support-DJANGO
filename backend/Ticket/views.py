@@ -7,6 +7,8 @@ from .forms import CustomUserCreationForm
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserChangeForm
 
 class HomeView(View):
     def get(self, request):
@@ -58,21 +60,45 @@ def signup(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
+            # Save the user and log them in
             user = form.save()
             login(request, user)
-            return redirect('Ticket/home.html')  # or any page after signup
+            return redirect('home')  # Make sure 'home' is the correct URL name for the landing page after signup
     else:
-        form = CustomUserCreationForm()
+        form = CustomUserCreationForm()  # Create a new form if GET request
+    
     return render(request, 'registration/signup.html', {'form': form})
+
 
 def user_login(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
+        # Using the AuthenticationForm to handle user login
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            # Authentication is successful, log the user in
+            user = form.get_user()
             login(request, user)
-            return redirect('home')  # adjust as needed
+            return redirect('home')  # Adjust this to your desired success page
         else:
-            return render(request, 'login.html', {'error': 'Invalid credentials'})
-    return render(request, 'registration/login.html')
+            # If form is invalid, return to the login page with an error message
+            return render(request, 'registration/login.html', {'form': form, 'error': 'Invalid credentials'})
+    
+    else:
+        form = AuthenticationForm()  # Create an empty form on GET requests
+        return render(request, 'registration/login.html', {'form': form})
+    
+@login_required
+def profile_view(request):
+    user_tickets = Ticket.objects.filter(created_by=request.user)
+    return render(request, 'accounts/profile.html', {'tickets': user_tickets})
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        form = UserChangeForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')  # or wherever you want
+    else:
+        form = UserChangeForm(instance=request.user)
+    return render(request, 'accounts/edit_profile.html', {'form': form})
