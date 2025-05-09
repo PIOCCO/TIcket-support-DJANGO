@@ -6,7 +6,7 @@ from .models import User  # your custom User model
 class TicketForm(forms.ModelForm):
     class Meta:
         model = Ticket
-        fields = ['title', 'description', 'status', 'priority', 'category', 'assigned_to']
+        fields = ['title', 'description', 'status', 'priority', 'category', 'assigned_to', 'ticket_picture']
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:

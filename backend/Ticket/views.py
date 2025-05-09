@@ -16,7 +16,7 @@ class HomeView(View):
 
 def create_ticket(request):
     if request.method == 'POST':
-        form = TicketForm(request.POST)
+        form = TicketForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect('ticket_success')  # Define this URL in urls.py

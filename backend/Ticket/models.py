@@ -52,6 +52,7 @@ class Ticket(models.Model):
     assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_tickets')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    ticket_picture = models.ImageField(upload_to='ticket_picture/', null=True, blank=True)
 
     def __str__(self):
         return self.title
