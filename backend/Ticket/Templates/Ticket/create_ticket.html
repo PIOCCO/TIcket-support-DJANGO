@@ -213,26 +213,6 @@
     </div>
 
     <div class="form-group">
-      <select name="status" class="form-select" id="id_status" required>
-        <option disabled selected value=""></option>
-        <option value="open">Open</option>
-        <option value="in_progress">In Progress</option>
-        <option value="closed">Closed</option>
-      </select>
-      <label for="id_status">Status</label>
-    </div>
-
-    <div class="form-group">
-      <select name="priority" class="form-select" id="id_priority" required>
-        <option disabled selected value=""></option>
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
-      </select>
-      <label for="id_priority">Priority</label>
-    </div>
-
-    <div class="form-group">
       <select name="category" class="form-select" id="id_category" required>
         <option disabled selected value=""></option>
         {% for value, label in form.category.field.choices %}
@@ -242,19 +222,10 @@
       <label for="id_category">Category</label>
     </div>
 
-    <div class="form-group">
-      <select name="assigned_to" class="form-select" id="id_assigned_to" required>
-        <option disabled selected value=""></option>
-        {% for user in form.assigned_to.field.queryset %}
-          <option value="{{ user.id }}">{{ user.username }}</option>
-        {% endfor %}
-      </select>
-      <label for="id_assigned_to">Assigned To</label>
-    </div>
-
+    
     <div class="form-group">
       <textarea name="description" class="form-control" id="id_description" placeholder=" " rows="3" required></textarea>
-      <label for="id_description">Description</label>
+      <label for="id_description">Issue description</label>
     </div>
 
     <!-- Fancy Image Upload -->

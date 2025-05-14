@@ -12,21 +12,28 @@ from django.contrib.auth.forms import UserChangeForm
 
 class HomeView(View):
     def get(self, request):
-        return render(request, 'Ticket/home.html')  # Adjust path as needed
+        return render(request, 'Ticket/home.html') 
 
+@login_required
 def create_ticket(request):
     if request.method == 'POST':
         form = TicketForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            return redirect('ticket_success')  # Define this URL in urls.py
+            ticket = form.save(commit=False)
+            ticket.created_by = request.user
+            ticket.save()
+            return redirect('ticket_success')
     else:
         form = TicketForm()
     
-    return render(request, 'Ticket/create_ticket.html', {'form': form})  # Adjust path if needed
+    return render(request, 'Ticket/create_ticket.html', {'form': form})
 
+@login_required
 def ticket_list(request):
-    tickets = Ticket.objects.all()
+    if request.user.is_staff or request.user.is_superuser:
+        tickets = Ticket.objects.all()  # Admin sees all tickets
+    else:
+        tickets = Ticket.objects.filter(created_by=request.user)  # Regular user sees their own
     return render(request, 'Ticket/ticket_list.html', {'tickets': tickets})
 
 def ticket_success(request):
@@ -102,3 +109,4 @@ def edit_profile(request):
     else:
         form = UserChangeForm(instance=request.user)
     return render(request, 'accounts/edit_profile.html', {'form': form})
+

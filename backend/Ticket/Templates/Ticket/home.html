@@ -181,13 +181,18 @@
     <h1>TiMosa</h1>
     <nav>
       {% if user.is_authenticated %}
-        <a href="/accounts/profile/">My Profile</a>
+  <a href="/accounts/profile/">My Profile</a>
 
-        <form action="{% url 'logout' %}" method="post" style="display:inline;">
-          {% csrf_token %}
-          <button type="submit" class="nav-link">Logout</button>
-        </form>
-      {% else %}
+  {% if user.is_staff or user.is_superuser %}
+    <a href="/admin/">Admin Dashboard</a>
+  {% endif %}
+
+  <form action="{% url 'logout' %}" method="post" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="nav-link">Logout</button>
+  </form>
+  {% else %}
+  <!-- Links for non-authenticated users -->
         <a href="/registration/signup/">Sign Up</a>
         <a href="/registration/login/">Log In</a>
       {% endif %}
@@ -198,13 +203,20 @@
     <div class="intro">
       <h2>Need Help? We're Here for You.</h2>
       <p>Submit a ticket, track your issue, or explore solutions to common problems.</p>
-      {% if user.is_authenticated %}
-    <a href="/tickets/create/" class="btn">Create New Ticket</a>
+       {% if user.is_authenticated %}
+      {% if user.is_staff or user.is_superuser %}
+        <!-- Only admins see this -->
+        <a href="/tickets/" class="btn">Review All Tickets</a>
       {% else %}
+        <!-- Regular authenticated users see this -->
+        <a href="/tickets/create/" class="btn">Create New Ticket</a>
+      {% endif %}
+    {% else %}
     <div style="background-color: #1a1a1a; color: #f0c040; padding: 20px; border: 1px solid #f0c040; border-radius: 10px; text-align: center; max-width: 400px; margin: 20px auto; box-shadow: 0 0 10px rgba(240, 192, 64, 0.3);">
         <p style="margin: 0; font-weight: bold;">🚫 You must <a href="{% url 'login' %}" style="color: #ffcc00; text-decoration: none;">log in</a> to create a ticket.</p>
     </div>
       {% endif %}
+  
 
 
     </div>

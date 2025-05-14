@@ -172,7 +172,9 @@
                             <p class="date"><strong>Created:</strong> {{ ticket.created_at|date:"F d, Y" }}</p>
                             <div class="ticket-actions">
                                 <a href="{% url 'ticket_detail' ticket.id %}">View Details</a>
+                                {% if user.is_staff or user.is_superuser %}
                                 <a href="{% url 'ticket_edit' ticket.id %}">Edit</a>
+                                {% endif %}
                                 <form method="POST" action="{% url 'ticket_delete' ticket.id %}" onsubmit="return confirm('Are you sure you want to delete this ticket?');">
                                     {% csrf_token %}
                                     <button type="submit">Delete</button>

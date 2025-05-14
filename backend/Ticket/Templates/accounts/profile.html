@@ -85,7 +85,9 @@
         </div>
 
         <div class="buttons">
+           {% if user.is_staff or user.is_superuser %}
             <a href="{% url 'edit_profile' %}" class="btn">Edit Profile</a>
+            {% endif %}
             <a href="{% url 'logout' %}" class="btn">Log Out</a>
         </div>
     </div>
