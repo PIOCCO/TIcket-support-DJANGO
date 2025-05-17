@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         body {
-            background-color: #1a1a1a; /* Dark background */
+            background-color: #1a1a1a;
             font-family: 'Arial', sans-serif;
             padding: 0;
             margin: 0;
@@ -18,15 +18,15 @@
             max-width: 900px;
             margin-top: 50px;
             padding: 40px;
-            background-color: #2d2d2d; /* Dark container background */
+            background-color: #2d2d2d;
             border-radius: 12px;
-            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.15); /* Soft shadow */
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.15);
         }
 
         h2 {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #f1c40f; /* Golden header */
+            color: #f1c40f;
             text-align: center;
             margin-bottom: 30px;
         }
@@ -50,13 +50,13 @@
         }
 
         .form-control:focus {
-            border-color: #f1c40f; /* Golden focus */
-            box-shadow: 0 0 5px rgba(241, 196, 15, 0.5); /* Golden glow */
+            border-color: #f1c40f;
+            box-shadow: 0 0 5px rgba(241, 196, 15, 0.5);
         }
 
         .btn-submit {
-            background-color: #f1c40f; /* Golden button */
-            color: #1a1a1a; /* Black text */
+            background-color: #f1c40f;
+            color: #1a1a1a;
             padding: 12px 25px;
             border-radius: 25px;
             font-size: 16px;
@@ -67,7 +67,7 @@
         }
 
         .btn-submit:hover {
-            background-color: #e0b90f; /* Slightly darker gold on hover */
+            background-color: #e0b90f;
         }
 
         .btn-secondary {
@@ -79,6 +79,8 @@
             border: 1px solid #444;
             margin-top: 15px;
             transition: background-color 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
         }
 
         .btn-secondary:hover {
@@ -108,51 +110,52 @@
 
 <div class="container">
     <h2>Edit Ticket</h2>
-
-    <!-- Displaying form errors if any -->
     {% if form.errors %}
-        <div class="alert alert-danger">
-            <ul>
-                {% for field in form %}
-                    {% for error in field.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
+  <div class="alert alert-danger">
+    <ul>
+      {% for field in form %}
+        {% for error in field.errors %}
+          <li>{{ field.label }}: {{ error }}</li>
+        {% endfor %}
+      {% endfor %}
+      {% for error in form.non_field_errors %}
+        <li>{{ error }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
 
-    <!-- Ticket Edit Form -->
     <form method="POST">
         {% csrf_token %}
         <div class="form-group">
-            <label for="id_title">Ticket Title</label>
+            <label for="{{ form.title.id_for_label }}">Ticket Title</label>
             {{ form.title }}
         </div>
         <div class="form-group">
-            <label for="id_description">Description</label>
+            <label for="{{ form.description.id_for_label }}">Description</label>
             {{ form.description }}
         </div>
         <div class="form-group">
-            <label for="id_status">Status</label>
+            <label for="{{ form.status.id_for_label }}">Status</label>
             {{ form.status }}
         </div>
         <div class="form-group">
-            <label for="id_priority">Priority</label>
+            <label for="{{ form.priority.id_for_label }}">Priority</label>
             {{ form.priority }}
         </div>
         <div class="form-group">
-            <label for="id_category">Category</label>
+            <label for="{{ form.category.id_for_label }}">Category</label>
             {{ form.category }}
         </div>
         <div class="form-group">
-            <label for="id_assigned_to">Assign To</label>
+            <label for="{{ form.assigned_to.id_for_label }}">Assign To</label>
             {{ form.assigned_to }}
         </div>
+        
         <button type="submit" class="btn-submit">Save Changes</button>
     </form>
 
-    <a href="{% url 'ticket_list' %}" class="btn-secondary mt-3">Back to Ticket List</a>
+    <a href="{% url 'ticket_list' %}" class="btn-secondary">Back to Ticket List</a>
 </div>
 
 </body>

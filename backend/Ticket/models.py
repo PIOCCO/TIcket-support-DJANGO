@@ -35,6 +35,7 @@ class Ticket(models.Model):
         ('low', 'Low'),
         ('medium', 'Medium'),
         ('high', 'High'),
+        ('critical', 'Critical')
     ]
 
     CATEGORY_CHOICES = [

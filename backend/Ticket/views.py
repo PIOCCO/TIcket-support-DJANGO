@@ -1,112 +1,141 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.forms import UserCreationForm
 from django.views import View
-from .forms import TicketForm
-from .models import Ticket
-from .forms import CustomUserCreationForm
 from django.contrib.auth import authenticate, login
-from django.shortcuts import render, redirect
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserChangeForm
+from django.contrib.auth.forms import AuthenticationForm, UserChangeForm
+from .forms import TicketForm, CustomUserCreationForm, AdminTicketForm
+from .models import Ticket, TicketLog
+from django.http import HttpResponseForbidden
+
+
+# ------------------ Home ------------------
 
 class HomeView(View):
     def get(self, request):
-        return render(request, 'Ticket/home.html') 
+        return render(request, 'Ticket/home.html')
+
+# ------------------ Ticket Views ------------------
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from .models import TicketLog
 
 @login_required
 def create_ticket(request):
-    if request.method == 'POST':
-        form = TicketForm(request.POST, request.FILES)
-        if form.is_valid():
-            ticket = form.save(commit=False)
-            ticket.created_by = request.user
-            ticket.save()
-            return redirect('ticket_success')
-    else:
-        form = TicketForm()
-    
+    form = TicketForm(request.POST or None, request.FILES or None)
+    if request.method == 'POST' and form.is_valid():
+        ticket = form.save(commit=False)
+        ticket.created_by = request.user
+        ticket.save()
+        
+        # Create the log BEFORE redirecting
+        TicketLog.objects.create(
+            ticket=ticket,
+            created_by=request.user,
+            action='Ticket created'
+        )
+        
+        return redirect('ticket_success')
+
     return render(request, 'Ticket/create_ticket.html', {'form': form})
+
 
 @login_required
 def ticket_list(request):
+    priority = request.GET.get('priority')
     if request.user.is_staff or request.user.is_superuser:
-        tickets = Ticket.objects.all()  # Admin sees all tickets
+        tickets = Ticket.objects.all()
     else:
-        tickets = Ticket.objects.filter(created_by=request.user)  # Regular user sees their own
+        tickets = Ticket.objects.filter(created_by=request.user)
+
+    if priority:
+        tickets = tickets.filter(priority=priority)
+
     return render(request, 'Ticket/ticket_list.html', {'tickets': tickets})
+
+
 
 def ticket_success(request):
     return render(request, 'Ticket/ticket_success.html')
+
 
 def ticket_detail(request, id):
     ticket = get_object_or_404(Ticket, id=id)
     return render(request, 'Ticket/ticket_detail.html', {'ticket': ticket})
 
+@login_required
 def ticket_edit(request, ticket_id):
-    ticket = get_object_or_404(Ticket, id=ticket_id)
+    ticket = Ticket.objects.get(id=ticket_id)
+    if not request.user.is_staff:
+        return HttpResponseForbidden()  # or redirect if not admin
+
     if request.method == 'POST':
-        form = TicketForm(request.POST, instance=ticket)
+        form = AdminTicketForm(request.POST, request.FILES, instance=ticket)
         if form.is_valid():
-            form.save()
-            return redirect('ticket_list')  # or another success URL
+            edited_ticket = form.save(commit=False)
+            # Preserve created_by from the original ticket
+            edited_ticket.created_by = ticket.created_by
+            edited_ticket.save()
+
+              # Log the edit action
+            TicketLog.objects.create(
+                ticket=edited_ticket,
+                created_by=request.user,
+                action='Ticket edited'
+            )
+            # redirect somewhere, e.g. ticket list
+            return redirect('ticket_list')
     else:
-        form = TicketForm(instance=ticket)
+        form = AdminTicketForm(instance=ticket)
+    return render(request, 'Ticket/ticket_edit.html', {'form': form})
 
-    return render(request, 'Ticket/ticket_edit.html', {'form': form, 'ticket': ticket})
 
+@login_required
 def ticket_delete(request, pk):
     ticket = get_object_or_404(Ticket, pk=pk)
+    
     if request.method == 'POST':
+        # Log deletion before deleting the ticket
+        TicketLog.objects.create(
+            ticket=ticket,
+            created_by=request.user,
+            action='Ticket deleted'
+        )
         ticket.delete()
         return redirect('ticket_list')
+    
+    return render(request, 'Ticket/ticket_confirm_delete.html', {'ticket': ticket})
 
-
+# ------------------ Auth Views ------------------
 
 def signup(request):
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            # Save the user and log them in
-            user = form.save()
-            login(request, user)
-            return redirect('home')  # Make sure 'home' is the correct URL name for the landing page after signup
-    else:
-        form = CustomUserCreationForm()  # Create a new form if GET request
-    
+    form = CustomUserCreationForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        user = form.save()
+        login(request, user)
+        return redirect('home')
     return render(request, 'registration/signup.html', {'form': form})
 
 
 def user_login(request):
-    if request.method == 'POST':
-        # Using the AuthenticationForm to handle user login
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            # Authentication is successful, log the user in
-            user = form.get_user()
-            login(request, user)
-            return redirect('home')  # Adjust this to your desired success page
-        else:
-            # If form is invalid, return to the login page with an error message
-            return render(request, 'registration/login.html', {'form': form, 'error': 'Invalid credentials'})
-    
-    else:
-        form = AuthenticationForm()  # Create an empty form on GET requests
-        return render(request, 'registration/login.html', {'form': form})
-    
+    form = AuthenticationForm(request, data=request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        login(request, form.get_user())
+        return redirect('home')
+    return render(request, 'registration/login.html', {'form': form})
+
+# ------------------ Profile Views ------------------
+
 @login_required
 def profile_view(request):
-    user_tickets = Ticket.objects.filter(created_by=request.user)
-    return render(request, 'accounts/profile.html', {'tickets': user_tickets})
+    tickets = Ticket.objects.filter(created_by=request.user)
+    return render(request, 'accounts/profile.html', {'tickets': tickets})
+
 
 @login_required
 def edit_profile(request):
-    if request.method == 'POST':
-        form = UserChangeForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
-            return redirect('profile')  # or wherever you want
-    else:
-        form = UserChangeForm(instance=request.user)
+    form = UserChangeForm(request.POST or None, instance=request.user)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        return redirect('profile')
     return render(request, 'accounts/edit_profile.html', {'form': form})
-
